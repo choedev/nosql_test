@@ -1,11 +1,9 @@
-class NoSqlInterface<T> {
+class NoSqlInterface {
+  /// 스토어 이름
+  static String storeName = '';
 
-  /// 맵으로 초기화
-  NoSqlInterface(Map<String, dynamic> map) {}
-
-  /// 데이터베이스 이름
   String getStoreName() {
-    return '';
+    return storeName;
   }
 
   /// 특정키를 사용할 경우 키 반환.
@@ -17,6 +15,11 @@ class NoSqlInterface<T> {
   /// 맵을 반환
   Map<String, dynamic> getMap() {
     return {};
+  }
+
+  /// Map을 모델로 변환
+  static dynamic toModel() {
+    return null;
   }
 }
 

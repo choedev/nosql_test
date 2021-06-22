@@ -13,22 +13,36 @@ var testData = {
 };
 
 class FooModel implements NoSqlInterface {
+  static String storeName = 'myStore';
+
+  String name;
+  int age;
+
+  FooModel(this.name, this.age);
+
   @override
   Map<String, dynamic> getMap() {
     return {
-      "name": "foo",
-      "age": 21
+      "name": name,
+      "age": age
     };
-  }
-
-  @override
-  String getStoreName() {
-    return "holo5";
   }
 
   @override
   getKey() {
     return null;
+  }
+
+  static dynamic toModel(Map<String, dynamic> map) {
+    return FooModel(
+        map['name'] ?? '',
+        map['age'] ?? 0,
+    );
+  }
+
+  @override
+  String getStoreName() {
+    return storeName;
   }
 }
 
@@ -52,7 +66,7 @@ void main() {
   });
 
   test('create', () async {
-    var foo = FooModel();
+    var foo = FooModel('foo', 18);
     var noSql = OoNoSql();
 
     var key = await noSql.create(foo);
@@ -60,7 +74,7 @@ void main() {
   });
 
   test('put', () async {
-    var foo = FooModel();
+    var foo = FooModel('foo', 18);
     var noSql = OoNoSql();
 
     var result = await noSql.createWithKey(11, foo);
@@ -68,36 +82,38 @@ void main() {
   });
 
   test('get', () async {
-    var foo = FooModel();
     var noSql = OoNoSql();
 
-    var record = await noSql.get(foo.getStoreName(), 1);
+    var record = await noSql.get(FooModel.storeName, 1);
     expect(record, isNot(null));
+
+    var model = FooModel.toModel(record) as FooModel;
+    expect(model.name, 'foo');
   });
 
   test('findEqual', () async {
-    var foo = FooModel();
     var noSql = OoNoSql();
+    var record = await noSql.findEqual(FooModel.storeName, 'name', 'foo', 'name');
+    var models = record.map((e) => FooModel.toModel(e) as FooModel).toList();
+    expect(models.length, 1);
 
-    var record = await noSql.findEqual(foo.getStoreName(), 'name', 'foo', 'name');
-    expect(record.length, 1);
+    var first = models.first;
+    expect(first.name, 'foo');
   });
 
   test('drop', () async {
-    var foo = FooModel();
     var noSql = OoNoSql();
 
-    await noSql.drop(foo.getStoreName());
-    var record = await noSql.findEqual(foo.getStoreName(), 'name', 'foo', 'name');
+    await noSql.drop(FooModel.storeName);
+    var record = await noSql.findEqual(FooModel.storeName, 'name', 'foo', 'name');
     expect(record.length, 0);
   });
 
   test('delete', () async {
-    var foo = FooModel();
     var noSql = OoNoSql();
 
-    await noSql.delete(foo.getStoreName(), 5);
-    var record = await noSql.findEqual(foo.getStoreName(), 'name', 'foo', 'name');
+    await noSql.delete(FooModel.storeName, 1);
+    var record = await noSql.findEqual(FooModel.storeName, 'name', 'foo', 'name');
     expect(record.length, 0);
   });
 }

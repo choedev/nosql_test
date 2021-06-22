@@ -92,7 +92,7 @@ class OoNoSql {
 
       _close(db);
 
-      return Future.value(records);
+      return Future.value(records.map((e) => e.value).toList());
 
     } catch(e) {
       log('$TAG findEqual: $e');

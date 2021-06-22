@@ -35,3 +35,4 @@
 {"key":4,"deleted":true,"store":"holo5"}
 {"key":5,"store":"holo5","value":{"name":"foo","age":21}}
 {"key":5,"deleted":true,"store":"holo5"}
+{"key":1,"store":"myStore","value":{"name":"foo","age":18}}
