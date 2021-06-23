@@ -1,2 +1,6 @@
 {"version":1,"sembast":1}
 {"key":1,"store":"myStore","value":{"name":"foo","age":18}}
+{"key":1,"store":"myStore","value":{"name":"foo5","age":26}}
+{"key":1,"deleted":true,"store":"myStore"}
+{"key":1,"store":"myStore","value":{"name":"foo5","age":26}}
+{"key":1,"store":"myStore","value":{"name":"foo5","age":27}}

@@ -69,15 +69,23 @@ void main() {
     var foo = FooModel('foo', 18);
     var noSql = OoNoSql();
 
-    var key = await noSql.create(foo);
+    var key = await noSql.set(foo);
     expect(key, 1);
   });
 
   test('put', () async {
-    var foo = FooModel('foo', 18);
+    var foo = FooModel('foo2', 20);
     var noSql = OoNoSql();
 
-    var result = await noSql.createWithKey(11, foo);
+    var result = await noSql.setWithKey(1, foo);
+    expect(result, true);
+  });
+
+  test('update', () async {
+    var foo = FooModel('foo5', 27);
+    var noSql = OoNoSql();
+
+    var result = await noSql.update(1, foo);
     expect(result, true);
   });
 
@@ -93,12 +101,13 @@ void main() {
 
   test('findEqual', () async {
     var noSql = OoNoSql();
-    var record = await noSql.findEqual(FooModel.storeName, 'name', 'foo', 'name');
+    var record = await noSql.findEqual(FooModel.storeName, 'name', 'foo5', 'name');
     var models = record.map((e) => FooModel.toModel(e) as FooModel).toList();
     expect(models.length, 1);
 
     var first = models.first;
-    expect(first.name, 'foo');
+    expect(first.name, 'foo5');
+    expect(models.length, 1);
   });
 
   test('drop', () async {
@@ -122,7 +131,7 @@ void main() {
     await noSql.deleteDatabase();
 
     var foo = FooModel('foo', 18);
-    var key = await noSql.create(foo);
+    var key = await noSql.set(foo);
     expect(key, 1);
 
     var record = await noSql.findEqual(FooModel.storeName, 'name', 'foo', 'name');

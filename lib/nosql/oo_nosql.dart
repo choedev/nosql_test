@@ -27,36 +27,53 @@ class OoNoSql {
 
   /// 단일 데이터 생성, 키값은 1부터 자동으로 증가하면 생성됨.
   /// 키값을 반환함, 생성 실패시 키값은 -1
-  Future<int> create(NoSqlInterface json) async {
+  Future<int> set(NoSqlInterface model) async {
     try {
       var db = await _open();
 
-      var store = intMapStoreFactory.store(json.getStoreName());
-      var key = await store.add(db, json.getMap());
+      var store = intMapStoreFactory.store(model.getStoreName());
+      var key = await store.add(db, model.getMap());
       _close(db);
 
       return Future.value(key);
 
     } catch(e) {
-      log('$TAG create error: $e');
+      log('$TAG set error: $e');
     }
     return Future.value(-1);
   }
 
   /// 특정키와 함까 데이터 생성.
   /// 데이터 생성 결과를 true/false로 반환.
-  Future<bool> createWithKey(dynamic key, NoSqlInterface json) async {
+  Future<bool> setWithKey(dynamic key, NoSqlInterface model) async {
     try {
       var db = await _open();
 
-      var store = intMapStoreFactory.store(json.getStoreName());
-      await store.record(key).put(db, json.getMap());
+      var store = intMapStoreFactory.store(model.getStoreName());
+      await store.record(key).put(db, model.getMap());
 
       _close(db);
       return Future.value(true);
 
     } catch(e) {
-      log('$TAG createWithKey error: $e');
+      log('$TAG setWithKey error: $e');
+    }
+
+    return Future.value(false);
+  }
+
+  /// 키 데이터 업데이트 (리플레이스)
+  Future<bool> update(dynamic key, NoSqlInterface model) async {
+    try {
+      var db = await _open();
+
+      var store = intMapStoreFactory.store(model.getStoreName());
+      await store.record(key).update(db, model.getMap());
+      _close(db);
+      return Future.value(true);
+
+    } catch(e) {
+      log('$TAG put error: $e');
     }
 
     return Future.value(false);
@@ -153,6 +170,7 @@ class OoNoSql {
     }
   }
 
+  /// 데이터베이스 삭제
   Future<void> deleteDatabase() async {
     try {
       await databaseFactoryIo.deleteDatabase(_dbPath);
