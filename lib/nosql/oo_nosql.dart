@@ -10,13 +10,13 @@ import 'package:sembast/sembast_io.dart';
 class OoNoSql {
   final TAG = 'OoNoSql';
 
-  final dbPath = 'nosql.db';
+  final _dbPath = 'nosql.db';
   final revision = 1;
 
   /// 데이터베이스 열기
   Future<Database> _open() async {
     DatabaseFactory factory = databaseFactoryIo;
-    Database db = await factory.openDatabase(dbPath, version: revision);
+    Database db = await factory.openDatabase(_dbPath, version: revision);
     return Future.value(db);
   }
 
@@ -150,6 +150,14 @@ class OoNoSql {
 
     } catch(e) {
       log('$TAG drop: $e');
+    }
+  }
+
+  Future<void> deleteDatabase() async {
+    try {
+      await databaseFactoryIo.deleteDatabase(_dbPath);
+    } catch(e) {
+      log('$TAG deleteDatabase: $e');
     }
   }
 }

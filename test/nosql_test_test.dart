@@ -116,4 +116,16 @@ void main() {
     var record = await noSql.findEqual(FooModel.storeName, 'name', 'foo', 'name');
     expect(record.length, 0);
   });
+
+  test('database delete', () async {
+    var noSql = OoNoSql();
+    await noSql.deleteDatabase();
+
+    var foo = FooModel('foo', 18);
+    var key = await noSql.create(foo);
+    expect(key, 1);
+
+    var record = await noSql.findEqual(FooModel.storeName, 'name', 'foo', 'name');
+    expect(record.length, 1);
+  });
 }
